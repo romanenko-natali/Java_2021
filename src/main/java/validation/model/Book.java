@@ -1,4 +1,4 @@
-package model;
+package validation.model;
 
 import model.enums.Genre;
 
@@ -10,7 +10,7 @@ import javax.validation.constraints.*;
 import java.time.Year;
 import java.util.Set;
 
-public class BookNew {
+public class Book {
     @Pattern(regexp = "\\d-\\d{2}-\\d{6}-\\d", message = "The format for ISBN should be like '1-23-234567-2'")
     private String isbn;
 
@@ -25,11 +25,13 @@ public class BookNew {
 
     @PastOrPresent
     private Year published;
+
+    @NotNull
     private String description;
 
-    private BookNew(){}
+    private Book(){}
 
-    private BookNew(Builder builder) {
+    private Book(Builder builder) {
         this.isbn = builder.isbn;
         this.title = builder.title;
         this.genre = builder.genre;
@@ -95,9 +97,9 @@ public class BookNew {
             return this;
         }
 
-        public BookNew build() throws IllegalArgumentException {
+        public Book build() throws IllegalArgumentException {
             validate();
-            return new BookNew(this);
+            return new Book(this);
         }
 
         private void validate() throws IllegalArgumentException {
@@ -105,13 +107,13 @@ public class BookNew {
             ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
             Validator validator = factory.getValidator();
 
-            BookNew book = new BookNew(this);
+            Book book = new Book(this);
 
-            Set<ConstraintViolation<BookNew>> violations = validator.validate(book);
+            Set<ConstraintViolation<Book>> violations = validator.validate(book);
 
             StringBuilder mb = new StringBuilder();
 
-             for (ConstraintViolation<BookNew> violation : violations) {
+             for (ConstraintViolation<Book> violation : violations) {
                  mb.append("Error for field " + violation.getPropertyPath() + ": '"+ violation.getInvalidValue() + " " + violation.getMessage()).append("\n");
             }
 
